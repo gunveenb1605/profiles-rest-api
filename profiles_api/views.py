@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from profiles_api import models
 from rest_framework.authentication import TokenAuthentication
 from profiles_api import permissions
+from rest_framework import filters
 
 #Allows us to define endpoint that we're going to assign to this view
 #We define a URL which is our endpoint and then you assign it to this view and the django rest framwork
@@ -113,3 +114,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     #configure to use the permissions class and authentication
     authentication_classes = (TokenAuthentication,)
     permission_classes  = (permissions.UpdateOwnProfile,)
+
+    #allows us to search  by name or email of profile
+    filter_backends = (filters.SearchFilter,)
+    searchfields = ('name', 'email',)
