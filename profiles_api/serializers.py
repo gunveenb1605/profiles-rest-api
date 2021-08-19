@@ -39,3 +39,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
             password = validated_data.pop('password')
             instance.set_password(password)
         return super().update(instance, validated_data)
+
+class ProfileFeedItemSerializer(serializers.ModelSerializer):
+    """Serializes profile feed items"""
+
+    class Meta:
+        model = models.ProfileFeedItem
+        fields = ('id', 'user_profile', 'status_text', 'created_on') #id field is created automatically by django thus it is set to read-only by default
+        #created_on field is also created automatically thus the only 2 fields that need to be serialized are user_profile and status_text
+        #We don't want the user to be able to create profile feed items for other user profiles, thus we need to set user_profile to read-only
+
+        extra_kwargs = {'user_profile' : {'read_only' : True}}

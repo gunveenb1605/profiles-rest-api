@@ -9,6 +9,7 @@ from profiles_api import permissions
 from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated #Authentication offered by Django
 
 #Allows us to define endpoint that we're going to assign to this view
 #We define a URL which is our endpoint and then you assign it to this view and the django rest framwork
@@ -126,3 +127,19 @@ class UserLoginApiView(ObtainAuthToken):
     """Handle creating user authentication tokens"""
     #By default, Django does not show the login page on the web browser, thus we need to override that behaviour by rendering that page using this command
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    """Handles creating, reading and updating profile feed items"""
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = models.ProfileFeedItem.objects.all()
+    permission_classes = (
+        permissions.UpdateOwnStatus, #Users can only uodate their own statuses
+        IsAuthenticated #Thus now users will not be able to create new feed items if they are not authenticated
+    )
+
+    #gets called whenever we do a HTTP POST request to our viewset
+    #helps customize how we create objects
+    def perform_create(self, serializer):
+        """Sets the user profile to the logged in user"""
+        serializer.save(user_profile=self.request.user) #usage of the token authentication sets a user for each requets that is made. This command helps us fetch that user who made the request

@@ -9,6 +9,9 @@ from django.contrib.auth.models import PermissionsMixin
 #Hence we need to do all this processing as below
 from django.contrib.auth.models import BaseUserManager
 
+from django.conf import settings #For the feed API
+#Used to retrieve settings from our Django project settings.py file
+
 
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
@@ -74,3 +77,22 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Return string representation of user"""
         return self.email
+
+class ProfileFeedItem(models.Model):
+    """Profile status update"""
+    #we create foreign keys to link two models together in django
+    #In the foreign key function, we do not handcode it to use the UserPofile mmodel coz later if we want to change it, we will have to manually
+    #This we fetch the model name from the settings.py file
+    user_profile = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete = models.CASCADE #since there is a foreign key rship, this model needs to be told what to do in case the primary key is deleted
+        #Here we are telling this model that if primary key is deleted, cascade all these changes down, which means apply all those changes wherever applicable
+        #Option other than cascading is set to null whic means, it would set the user profile model value to null
+    )
+
+    status_text = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True) #automatically add the date time field whenever a new feed item is created
+
+    def __str__(self):
+        """Return the model as a string"""
+        return self.status_text

@@ -12,6 +12,9 @@ router.register('hello-viewset', views.HelloViewSet, base_name='hello-viewset') 
 router.register('profile', views.UserProfileViewSet)
 #don't need to assign a base_name coz we have specified a queryset for this view
 
+router.register('feed', views.UserProfileFeedViewSet)
+#don't need to assign a base_name coz we have specified a queryset for this view
+
 urlpatterns = [
     path('hello-view/', views.HelloApiView.as_view()), #as_view function helps render the HelloApiView
     path('login/', views.UserLoginApiView.as_view()),
