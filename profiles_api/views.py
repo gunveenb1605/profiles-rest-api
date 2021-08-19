@@ -3,6 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status #Imports standard HTTP status codes
 from profiles_api import serializers
 from rest_framework import viewsets
+from profiles_api import models
+from rest_framework.authentication import TokenAuthentication
+from profiles_api import permissions
 
 #Allows us to define endpoint that we're going to assign to this view
 #We define a URL which is our endpoint and then you assign it to this view and the django rest framwork
@@ -100,3 +103,13 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         """Handle removing an object"""
         return Response({'http_method' : 'DELETE'})
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle creating and updating prfiles"""
+
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+
+    #configure to use the permissions class and authentication
+    authentication_classes = (TokenAuthentication,)
+    permission_classes  = (permissions.UpdateOwnProfile,)
