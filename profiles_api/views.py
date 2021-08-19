@@ -7,6 +7,8 @@ from profiles_api import models
 from rest_framework.authentication import TokenAuthentication
 from profiles_api import permissions
 from rest_framework import filters
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 
 #Allows us to define endpoint that we're going to assign to this view
 #We define a URL which is our endpoint and then you assign it to this view and the django rest framwork
@@ -118,3 +120,9 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     #allows us to search  by name or email of profile
     filter_backends = (filters.SearchFilter,)
     searchfields = ('name', 'email',)
+
+
+class UserLoginApiView(ObtainAuthToken):
+    """Handle creating user authentication tokens"""
+    #By default, Django does not show the login page on the web browser, thus we need to override that behaviour by rendering that page using this command
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES

@@ -14,5 +14,7 @@ router.register('profile', views.UserProfileViewSet)
 
 urlpatterns = [
     path('hello-view/', views.HelloApiView.as_view()), #as_view function helps render the HelloApiView
+    path('login/', views.UserLoginApiView.as_view()),
     path('', include(router.urls)) #we use an empty string in the beginning because we don't want to put any prefix to this url, we just want to include all of urls in the base of this urls file
+
 ]
